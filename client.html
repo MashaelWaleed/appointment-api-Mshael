@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>شاشة التحديثات اللحظية - حنين</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h2>التحديثات اللحظية للمواعيد 🚀</h2>
+    <ul id="updates" style="font-family: monospace; font-size: 16px;"></ul>
+
+    <script>
+        const socket = io('http://localhost:3000');
+        
+        socket.on('connect', () => {
+            document.getElementById('updates').innerHTML += `<li style="color: green;">🟢 متصل بالخادم!</li>`;
+        });
+
+        socket.on('appointmentUpdated', (event) => {
+            const list = document.getElementById('updates');
+            const color = event.type === 'BOOKED' ? 'blue' : 'red';
+            const text = event.type === 'BOOKED' ? 'تم حجز موعد جديد' : 'تم إلغاء موعد';
+            
+            list.innerHTML += `<li style="color: ${color};">🔔 ${text}: من ${event.data.startTime} إلى ${event.data.endTime}</li>`;
+        });
+    </script>
+</body>
+</html>
